@@ -1,12 +1,13 @@
 import React from "react";
 
 export default class List extends React.Component {
-    constructor(props){
-        super(props);
+    constructor(){
+        super();
     }
     render(){
+ 
         return (
-            <li>{this.props.data}</li>
+            <li>{this.props.data.name}- {this.props.data.address}</li>    
         )
     }
 }
