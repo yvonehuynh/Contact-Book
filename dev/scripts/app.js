@@ -17,13 +17,31 @@ class App extends React.Component {
   constructor(){
     super();
     this.state={
-      contacts: [],
+      contacts: [{
+        name: "Yvone Huynh",
+        address: "1 maple ave."
+      }],
       name: "",
       address: ""
     };
     this.onChange = this.onChange.bind(this)
     this.addItem = this.addItem.bind(this)
   };
+  componentDidMount() {
+    const dbRef = firebase.database().ref();
+
+    dbRef.on("value", (firebaseData) => {
+      const itemsArray = [];
+      const itemsData = firebaseData.val();
+      for (let itemKey in itemsData) {
+        itemsData[itemKey].key = itemKey;
+        itemsArray.push(itemsData[itemKey])
+      }
+      this.setState({
+        contacts: itemsArray
+      })
+    })
+  }
   onChange(e){
     this.setState({
       [e.target.name]: e.target.value
@@ -35,10 +53,13 @@ class App extends React.Component {
       name: this.state.name,
       address: this.state.address
     };
-
     this.setState({
-      contacts: contactListing,
+      name: "",
+      address: ""
     });
+
+    const dbRef = firebase.database().ref();
+    dbRef.push(contactListing);
   }
     render() {
       return (
@@ -50,11 +71,11 @@ class App extends React.Component {
             <input type="text" name="address" value={this.state.address} onChange={this.onChange}/>
             <input type="submit"/>
           </form>
-          {Object.keys(this.state.contacts).map((res)=>{
-            console.log(res)
-            return <List data={res}/>
-          })}
-         
+          <ul>
+            {this.state.contacts.map((res)=>{
+              return <List data={res}/>
+            })}
+         </ul>
         </div>
       )
     }
