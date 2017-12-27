@@ -2,6 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import List from "./list";
 
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyCRb7pafnMnJL7XZcWTLPVe6xY5YEJbL0s",
+  authDomain: "my-project-1503010099071.firebaseapp.com",
+  databaseURL: "https://my-project-1503010099071.firebaseio.com",
+  projectId: "my-project-1503010099071",
+  storageBucket: "my-project-1503010099071.appspot.com",
+  messagingSenderId: "524797115092"
+};
+firebase.initializeApp(config);
+
 class App extends React.Component {
   constructor(){
     super();
