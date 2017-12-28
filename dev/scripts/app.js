@@ -13,13 +13,13 @@ var config = {
 };
 firebase.initializeApp(config);
 
-function autocompleteInput() {
+function autocompleteInput(inputId) {
   // autocomplete
   var defaultBounds = new google.maps.LatLngBounds(
     new google.maps.LatLng(-90, -180),
     new google.maps.LatLng(90, 180));
 
-  var input = document.getElementById("address");
+  var input = document.getElementById(inputId);
   var options = {
     bounds: defaultBounds
     //types: ['(address)'],
@@ -39,12 +39,17 @@ class App extends React.Component {
       name: "",
       address: "",
       work: "",
-      other: ""
+      other: "",
+
     };
     this.onChange = this.onChange.bind(this)
     this.addItem = this.addItem.bind(this)
     this.showMore = this.showMore.bind(this)
     this.removeItem = this.removeItem.bind(this)
+    this.showCreate = this.showCreate.bind(this)
+    this.createUser = this.createUser.bind(this)
+    this.showLogin = this.showLogin.bind(this)
+    this.loginUser = this.loginUser.bind(this)
   };
   componentDidMount() {
     const dbRef = firebase.database().ref();
@@ -56,7 +61,6 @@ class App extends React.Component {
         itemsData[itemKey].key = itemKey;
         contacts.push(itemsData[itemKey])
       }
-      console.log(contacts)
       this.setState({
         contacts
       })
@@ -97,25 +101,125 @@ class App extends React.Component {
     const dbRef = firebase.database().ref(itemToRemove);
     dbRef.remove();
   }
+  createUser(e) {
+    e.preventDefault();
+    const email = this.createEmail.value;
+    const password = this.createPassword.value;
+    const confirm = this.confirmPassword.value;
+    if (password === confirm) {
+      firebase.auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((res)=>{
+        this.showCreate(e);
+      })
+      .catch((err)=>{
+        alert(err.message)
+      })
+    } else {
+      alert("passwords must match")
+    }
+  }
+  showCreate(e){
+    e.preventDefault();
+    this.overlay.classList.toggle("show");
+    this.createUserModal.classList.toggle("show");
+  }
+  showLogin(e){
+    e.preventDefault();
+    this.overlay.classList.toggle("show");
+    this.loginModal.classList.toggle("show");
+  }
+  loginUser(e){
+    e.preventDefault();
+    const email = this.userEmail.value;
+    const password = this.userPassword.value;
+
+    firebase.auth()
+      .signInWithEmailAndPassword(email,password)
+      .then((res) => {
+        this.showLogin(e);
+      })
+      .catch((err) => {
+        alert(err.message)
+      })
+  }
     render() {
       const myData = this.state.contacts
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((item) => <List data={item} key={item.key} remove={this.removeItem}/>);
 
       return (
+        
         <div>
+          <nav>
+            <div>
+            <a onClick={this.showCreate}>Create User</a>
+            </div>
+            <div>
+            <a onClick={this.showLogin}>Login</a>
+            </div>
+          </nav>
+
+                    <div className="loginModal modal" ref={ref => this.loginModal = ref}>
+            <div className="close">
+              <button>close</button>
+            </div>
+          
+            <form action="" onSubmit={this.loginUser}>
+            <div>
+              <label htmlFor="email">email</label>
+              <input type="text" name="email" ref={ref => this.userEmail = ref}/>
+            </div>
+
+             <div>
+                <label htmlFor="password">password</label>
+                <input type="text" name="password" ref={ref => this.userPassword = ref}/>
+            </div>
+            <input type="submit" value="Login"/>
+          </form>
+          </div>
+
+          <div className="overlay" ref={ref => this.overlay = ref}>
+          <div className="createUserModal modal" ref={ref => this.createUserModal = ref}>
+            <div className="close">
+              <button>close</button>
+            </div>
+            <form action="" onSubmit={this.createUser}>
+              <div>
+                <label htmlFor="createEmail">email</label>
+                <input type="text" name="createEmail" ref={ref => this.createEmail = ref} />
+              </div>
+              <div>
+                <label htmlFor="createPassword">password</label>
+                <input type="text" name="createPassword" ref={ref => this.createPassword = ref} />
+              </div>
+              <div>
+                <label htmlFor="confirmPassword">confirmPassword</label>
+                <input type="text" name="confirmPassword" ref={ref => this.confirmPassword = ref} />
+              </div>
+              <div>
+                <input type="Submit" value="create" />
+              </div>
+            </form>
+            </div>
+          </div>
+
+
+          <h1>Contact Book</h1>
           <form onSubmit={this.addItem}>
             <label htmlFor="name">Name</label>
             <input type="text" name="name" value={this.state.name} onChange={this.onChange} ref={ref => this.name = ref}/>
             <label htmlFor="address">Home Address</label>
-            {autocompleteInput()}
+            {autocompleteInput("address")}
             <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref}/>
             <input type="submit"/>
             <a onClick={()=>this.showMore()}>More Addresses</a>
             <div className="more-addresses">
               <label htmlFor="work">Work Address</label>
+              {autocompleteInput("work")}
               <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} ref={ref => this.work = ref}/>
               <label htmlFor="other">Other Address</label>
+              {autocompleteInput("other")}
               <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} ref={ref => this.other = ref}/>
             </div>
           </form>
