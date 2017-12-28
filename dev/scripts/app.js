@@ -49,6 +49,7 @@ class App extends React.Component {
     this.createUser = this.createUser.bind(this)
     this.showLogin = this.showLogin.bind(this)
     this.loginUser = this.loginUser.bind(this)
+    this.logOut = this.logOut.bind(this)
   };
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user)=>{
@@ -153,6 +154,10 @@ class App extends React.Component {
         alert(err.message)
       })
   }
+  logOut(e){
+    e.preventDefault();
+    firebase.auth().signOut();
+  }
     render() {
       const myData = this.state.contacts
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -171,18 +176,56 @@ class App extends React.Component {
           return signOut;
         }
       }
+
+      const showInputs =()=>{
+        if (this.state.loggedIn) {
+          return (
+            <form onSubmit={this.addItem}>
+              <label htmlFor="name">Name</label>
+              <input type="text" name="name" value={this.state.name} onChange={this.onChange} ref={ref => this.name = ref} />
+              <label htmlFor="address">Home Address</label>
+              {autocompleteInput("address")}
+              <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref} />
+              <input type="submit" />
+              <a onClick={() => this.showMore()}>More Addresses</a>
+              <div className="more-addresses">
+                <label htmlFor="work">Work Address</label>
+                {autocompleteInput("work")}
+                <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} ref={ref => this.work = ref} />
+                <label htmlFor="other">Other Address</label>
+                {autocompleteInput("other")}
+                <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} ref={ref => this.other = ref} />
+              </div>
+            </form>
+          )
+        }
+      }
       return (
         <div>
+
           <nav>
-            <div>
-            <a onClick={this.showCreate}>Create User</a>
-            </div>
-            <div>
-            <a onClick={this.showLogin}>Login</a>
-            </div>
+            {
+              (()=>{
+                if (this.state.loggedIn) {
+                  return (
+                <div>
+                  <a onClick={this.logOut}>Logout</a>
+                </div>
+                  )
+                } else {
+                  return (
+                    <div>
+                      <a onClick={this.showCreate}>Create User</a>
+                      <a onClick={this.showLogin}>Login</a>
+                    </div>
+                  )
+                }
+              })()
+            }
+           
           </nav>
 
-                    <div className="loginModal modal" ref={ref => this.loginModal = ref}>
+          <div className="loginModal modal" ref={ref => this.loginModal = ref}>
             <div className="close">
               <button onClick={this.showLogin}>close</button>
             </div>
@@ -228,25 +271,8 @@ class App extends React.Component {
 
 
           <h1>Contact Book</h1>
-          <form onSubmit={this.addItem}>
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={this.state.name} onChange={this.onChange} ref={ref => this.name = ref}/>
-            <label htmlFor="address">Home Address</label>
-            {autocompleteInput("address")}
-            <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref}/>
-            <input type="submit"/>
-            <a onClick={()=>this.showMore()}>More Addresses</a>
-            <div className="more-addresses">
-              <label htmlFor="work">Work Address</label>
-              {autocompleteInput("work")}
-              <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} ref={ref => this.work = ref}/>
-              <label htmlFor="other">Other Address</label>
-              {autocompleteInput("other")}
-              <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} ref={ref => this.other = ref}/>
-            </div>
-          </form>
+            {showInputs()}
           <div>
-            {/* {myData} */}
             {showComp()}
          </div>
         </div>
