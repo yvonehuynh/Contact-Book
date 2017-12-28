@@ -28,19 +28,18 @@ function autocompleteInput(inputId) {
   // end autocomplete
 }
 
+
 class App extends React.Component {
   constructor(){
     super();
     this.state={
       contacts: [{
-        name: "Yvone Huynh",
-        address: "1 maple ave."
       }],
       name: "",
       address: "",
       work: "",
       other: "",
-
+      loggedIn: false
     };
     this.onChange = this.onChange.bind(this)
     this.addItem = this.addItem.bind(this)
@@ -52,18 +51,29 @@ class App extends React.Component {
     this.loginUser = this.loginUser.bind(this)
   };
   componentDidMount() {
-    const dbRef = firebase.database().ref();
+    firebase.auth().onAuthStateChanged((user)=>{
+      if (user) {
+        const dbRef = firebase.database().ref();
 
-    dbRef.on("value", (firebaseData) => {
-      const contacts = [];
-      const itemsData = firebaseData.val();
-      for (let itemKey in itemsData) {
-        itemsData[itemKey].key = itemKey;
-        contacts.push(itemsData[itemKey])
+        dbRef.on("value", (firebaseData) => {
+          const contacts = [];
+          const itemsData = firebaseData.val();
+          for (let itemKey in itemsData) {
+            itemsData[itemKey].key = itemKey;
+            contacts.push(itemsData[itemKey])
+          }
+          this.setState({
+            contacts,
+            loggedIn: true
+          })
+        });
       }
-      this.setState({
-        contacts
-      })
+      else {
+        this.setState({
+          contacts: [{}],
+          loggedIn: false
+        })
+      }
     })
   }
   onChange(e){
@@ -146,10 +156,22 @@ class App extends React.Component {
     render() {
       const myData = this.state.contacts
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map((item) => <List data={item} key={item.key} remove={this.removeItem}/>);
+        .map((item) => <List data={item} key={item.key} remove={this.removeItem} />);
 
+      const signOut = (
+        <span>
+          <h2>Please Sign In</h2>
+        </span>
+      )
+
+      const showComp = ()=>{
+        if (this.state.loggedIn) {
+          return myData;
+        } else {
+          return signOut;
+        }
+      }
       return (
-        
         <div>
           <nav>
             <div>
@@ -162,7 +184,7 @@ class App extends React.Component {
 
                     <div className="loginModal modal" ref={ref => this.loginModal = ref}>
             <div className="close">
-              <button>close</button>
+              <button onClick={this.showLogin}>close</button>
             </div>
           
             <form action="" onSubmit={this.loginUser}>
@@ -182,7 +204,7 @@ class App extends React.Component {
           <div className="overlay" ref={ref => this.overlay = ref}>
           <div className="createUserModal modal" ref={ref => this.createUserModal = ref}>
             <div className="close">
-              <button>close</button>
+              <button onClick={this.showCreate}>close</button>
             </div>
             <form action="" onSubmit={this.createUser}>
               <div>
@@ -224,7 +246,8 @@ class App extends React.Component {
             </div>
           </form>
           <div>
-            {myData}
+            {/* {myData} */}
+            {showComp()}
          </div>
         </div>
       )
