@@ -44,19 +44,21 @@ class App extends React.Component {
     this.onChange = this.onChange.bind(this)
     this.addItem = this.addItem.bind(this)
     this.showMore = this.showMore.bind(this)
+    this.removeItem = this.removeItem.bind(this)
   };
   componentDidMount() {
     const dbRef = firebase.database().ref();
 
     dbRef.on("value", (firebaseData) => {
-      const itemsArray = [];
+      const contacts = [];
       const itemsData = firebaseData.val();
       for (let itemKey in itemsData) {
         itemsData[itemKey].key = itemKey;
-        itemsArray.push(itemsData[itemKey])
+        contacts.push(itemsData[itemKey])
       }
+      console.log(contacts)
       this.setState({
-        contacts: itemsArray
+        contacts
       })
     })
   }
@@ -70,14 +72,14 @@ class App extends React.Component {
     const address = document.getElementById("address").value;
     const work = document.getElementById("work").value;
     const other = document.getElementById("other").value;
+    const name = this.state.name;
     const contactListing = {
-      name: this.state.name,
+      name,
       address,
       work,
       other
     };
 
-    console.log(location)
     this.setState({
       name: "",
       address: "",
@@ -91,10 +93,14 @@ class App extends React.Component {
   showMore(){
     document.querySelector(".more-addresses").classList.toggle("show")
   }
+  removeItem(itemToRemove){
+    const dbRef = firebase.database().ref(itemToRemove);
+    dbRef.remove();
+  }
     render() {
       const myData = this.state.contacts
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map((item) => <List data={item} />);
+        .map((item) => <List data={item} key={item.key} remove={this.removeItem}/>);
 
       return (
         <div>
@@ -104,14 +110,14 @@ class App extends React.Component {
             <label htmlFor="address">Home Address</label>
             {autocompleteInput()}
             <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange}/>
-              <div className="more-addresses">
-                <label htmlFor="work">Work Address</label>
-                <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange}/>
-                <label htmlFor="other">Other Address</label>
-                <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange}/>
-              </div>
             <input type="submit"/>
             <a onClick={()=>this.showMore()}>More Addresses</a>
+            <div className="more-addresses">
+              <label htmlFor="work">Work Address</label>
+              <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} />
+              <label htmlFor="other">Other Address</label>
+              <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} />
+            </div>
           </form>
           <div>
             {myData}
