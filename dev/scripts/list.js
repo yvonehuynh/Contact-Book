@@ -7,12 +7,15 @@ export default class List extends React.Component {
     render(){
  
         return (
-            <ul>
-                <li>{this.props.data.name}</li>
-                <li>Home - {this.props.data.address}</li>
-                <li>Work - {this.props.data.work}</li>
-                <li>Other - {this.props.data.other}</li>
-            </ul>
+            
+            <li key={this.props.data.key}>
+                    {this.props.data.name}
+                    Home - {this.props.data.address}
+                    Work - {this.props.data.work}
+                    Other - {this.props.data.other}
+                    <button onClick={()=>this.props.remove(this.props.data.key)}>Remove</button>
+                </li>
+            
         )
     }
 }
