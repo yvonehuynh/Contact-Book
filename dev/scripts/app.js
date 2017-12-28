@@ -21,8 +21,8 @@ function autocompleteInput() {
 
   var input = document.getElementById("address");
   var options = {
-    bounds: defaultBounds,
-    types: ['(regions)'],
+    bounds: defaultBounds
+    //types: ['(address)'],
   };
   var autocomplete = new google.maps.places.Autocomplete(input, options);
   // end autocomplete
@@ -37,10 +37,13 @@ class App extends React.Component {
         address: "1 maple ave."
       }],
       name: "",
-      address: ""
+      address: "",
+      work: "",
+      other: ""
     };
     this.onChange = this.onChange.bind(this)
     this.addItem = this.addItem.bind(this)
+    this.showMore = this.showMore.bind(this)
   };
   componentDidMount() {
     const dbRef = firebase.database().ref();
@@ -64,20 +67,29 @@ class App extends React.Component {
   }
   addItem(e){
     e.preventDefault();
-    const location = document.getElementById("address").value;
+    const address = document.getElementById("address").value;
+    const work = document.getElementById("work").value;
+    const other = document.getElementById("other").value;
     const contactListing = {
       name: this.state.name,
-      address: location
+      address,
+      work,
+      other
     };
 
     console.log(location)
     this.setState({
       name: "",
-      address: ""
+      address: "",
+      work: "",
+      other: ""
     });
 
     const dbRef = firebase.database().ref();
     dbRef.push(contactListing);
+  }
+  showMore(){
+    document.querySelector(".more-addresses").classList.toggle("show")
   }
     render() {
       const myData = this.state.contacts
@@ -89,14 +101,21 @@ class App extends React.Component {
           <form onSubmit={this.addItem}>
             <label htmlFor="name">Name</label>
             <input type="text" name="name" value={this.state.name} onChange={this.onChange}/>
-            <label htmlFor="address">Address</label>
+            <label htmlFor="address">Home Address</label>
             {autocompleteInput()}
             <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange}/>
+              <div className="more-addresses">
+                <label htmlFor="work">Work Address</label>
+                <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange}/>
+                <label htmlFor="other">Other Address</label>
+                <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange}/>
+              </div>
             <input type="submit"/>
+            <a onClick={()=>this.showMore()}>More Addresses</a>
           </form>
-          <ul>
-        {myData}
-         </ul>
+          <div>
+            {myData}
+         </div>
         </div>
       )
     }
