@@ -7,7 +7,12 @@ export default class List extends React.Component {
     render(){
  
         return (
-            <li>{this.props.data.name}- {this.props.data.address}</li>    
+            <ul>
+                <li>{this.props.data.name}</li>
+                <li>Home - {this.props.data.address}</li>
+                <li>Work - {this.props.data.work}</li>
+                <li>Other - {this.props.data.other}</li>
+            </ul>
         )
     }
 }
