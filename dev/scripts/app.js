@@ -106,17 +106,17 @@ class App extends React.Component {
         <div>
           <form onSubmit={this.addItem}>
             <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={this.state.name} onChange={this.onChange}/>
+            <input type="text" name="name" value={this.state.name} onChange={this.onChange} ref={ref => this.name = ref}/>
             <label htmlFor="address">Home Address</label>
             {autocompleteInput()}
-            <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange}/>
+            <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref}/>
             <input type="submit"/>
             <a onClick={()=>this.showMore()}>More Addresses</a>
             <div className="more-addresses">
               <label htmlFor="work">Work Address</label>
-              <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} />
+              <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} ref={ref => this.work = ref}/>
               <label htmlFor="other">Other Address</label>
-              <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} />
+              <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} ref={ref => this.other = ref}/>
             </div>
           </form>
           <div>
