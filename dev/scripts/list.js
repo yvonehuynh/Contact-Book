@@ -8,6 +8,7 @@ export default class List extends React.Component {
             contactInfo: {}
         }
         this.save = this.save.bind(this)
+        this.showContacts = this.showContacts.bind(this)
     }
     save(e) {
         e.preventDefault();
@@ -23,13 +24,23 @@ export default class List extends React.Component {
             editing: false
         });
     }
+    showContacts(){
+        document.querySelector(".contactList").classList.toggle("showContacts");
+        console.log("click!")
+    }
     render(){
         let editingTemp = (
             <span>
-                <p>{this.props.data.name}</p>
+                <p className="main-name" onClick={this.showContacts}>{this.props.data.name}</p>
+                <div className="contactList" ref={ref => this.contactList = ref}>
                 <p>Home - {this.props.data.address}</p>
                 <p>Work - {this.props.data.work}</p>
                 <p>Other - {this.props.data.other}</p>
+                    <button onClick={() => {
+                        this.setState({ editing: true })
+                    }}>edit</button>
+                    <button onClick={() => this.props.remove(this.props.data.key)}>Remove</button>
+                </div>
             </span>
         )
         if (this.state.editing) {
@@ -45,15 +56,11 @@ export default class List extends React.Component {
             )
         }
         return (
-            
+
             <li key={this.props.data.key}>
                     {editingTemp}
-                <button onClick={() => {
-                    this.setState({ editing: true })
-                }}>edit</button>
-                    <button onClick={()=>this.props.remove(this.props.data.key)}>Remove</button>
                 </li>
-            
+
         )
     }
 }
