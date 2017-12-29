@@ -25,7 +25,7 @@ export default class List extends React.Component {
         });
     }
     showContacts(){
-        document.querySelector(".contactList").classList.toggle("showContacts");
+        this.contactList.classList.toggle("showContacts")
         console.log("click!")
     }
     render(){
@@ -33,13 +33,13 @@ export default class List extends React.Component {
             <span>
                 <p className="main-name" onClick={this.showContacts}>{this.props.data.name}</p>
                 <div className="contactList" ref={ref => this.contactList = ref}>
-                <p>Home - {this.props.data.address}</p>
-                <p>Work - {this.props.data.work}</p>
-                <p>Other - {this.props.data.other}</p>
+                    <p>Home - {this.props.data.address}</p>
+                    <p>Work - {this.props.data.work}</p>
+                    <p>Other - {this.props.data.other}</p>
                     <button onClick={() => {
-                        this.setState({ editing: true })
-                    }}>edit</button>
-                    <button onClick={() => this.props.remove(this.props.data.key)}>Remove</button>
+                            this.setState({ editing: true })
+                        }}>edit</button>
+                        <button onClick={() => this.props.remove(this.props.data.key)}>Remove</button>
                 </div>
             </span>
         )
