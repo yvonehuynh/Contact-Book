@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import List from "./list";
+import Auth from "./auth";
 
 // Initialize Firebase
 var config = {
@@ -202,29 +203,8 @@ class App extends React.Component {
       }
       return (
         <div>
-
-          <nav>
-            {
-              (()=>{
-                if (this.state.loggedIn) {
-                  return (
-                <div>
-                  <a onClick={this.logOut}>Logout</a>
-                </div>
-                  )
-                } else {
-                  return (
-                    <div>
-                      <a onClick={this.showCreate}>Create User</a>
-                      <a onClick={this.showLogin}>Login</a>
-                    </div>
-                  )
-                }
-              })()
-            }
-           
-          </nav>
-
+          <Auth loggedIn={this.state.loggedIn} logOut={this.logOut} showCreate={this.showCreate} showLogin={this.showLogin}/>
+  
           <div className="loginModal modal" ref={ref => this.loginModal = ref}>
             <div className="close">
               <button onClick={this.showLogin}>close</button>
@@ -272,8 +252,10 @@ class App extends React.Component {
 
           <h1>Contact Book</h1>
             {showInputs()}
-          <div>
+          <div className="contact-list-container">
+          
             {showComp()}
+            
          </div>
         </div>
       )
