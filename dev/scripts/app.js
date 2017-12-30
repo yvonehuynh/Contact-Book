@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import List from "./list";
-import Auth from "./auth";
+import AuthNav from "./auth";
 
 // Initialize Firebase
 var config = {
@@ -64,6 +64,7 @@ class App extends React.Component {
             itemsData[itemKey].key = itemKey;
             contacts.push(itemsData[itemKey])
           }
+
           this.setState({
             contacts,
             loggedIn: true
@@ -107,7 +108,8 @@ class App extends React.Component {
     dbRef.push(contactListing);
   }
   showMore(){
-    document.querySelector(".more-addresses").classList.toggle("show")
+    document.querySelector(".more-addresses").classList.toggle("show");
+    console.log("boomboom");
   }
   removeItem(itemToRemove){
     const dbRef = firebase.database().ref(itemToRemove);
@@ -166,6 +168,7 @@ class App extends React.Component {
 
       const signOut = (
         <span>
+          <p>Save your friend's addresses using Contact-Book! You can add their home, work, and other address to store for later.</p>
           <h2>Please Sign In</h2>
         </span>
       )
@@ -188,7 +191,9 @@ class App extends React.Component {
               {autocompleteInput("address")}
               <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref} />
               <input type="submit" />
+
               <a onClick={() => this.showMore()}>More Addresses</a>
+
               <div className="more-addresses">
                 <label htmlFor="work">Work Address</label>
                 {autocompleteInput("work")}
@@ -202,33 +207,28 @@ class App extends React.Component {
         }
       }
       return (
-        <div>
-          <Auth loggedIn={this.state.loggedIn} logOut={this.logOut} showCreate={this.showCreate} showLogin={this.showLogin}/>
+        <div className="wrapper">
+          <AuthNav loggedIn={this.state.loggedIn} logOut={this.logOut} showCreate={this.showCreate} showLogin={this.showLogin}/>
   
           <div className="loginModal modal" ref={ref => this.loginModal = ref}>
-            <div className="close">
-              <button onClick={this.showLogin}>close</button>
-            </div>
           
             <form action="" onSubmit={this.loginUser}>
-            <div>
-              <label htmlFor="email">email</label>
-              <input type="text" name="email" ref={ref => this.userEmail = ref}/>
-            </div>
+              <div>
+                <label htmlFor="email">email</label>
+                <input type="text" name="email" ref={ref => this.userEmail = ref}/>
+              </div>
 
-             <div>
-                <label htmlFor="password">password</label>
-                <input type="text" name="password" ref={ref => this.userPassword = ref}/>
-            </div>
-            <input type="submit" value="Login"/>
+              <div>
+                  <label htmlFor="password">password</label>
+                  <input type="text" name="password" ref={ref => this.userPassword = ref}/>
+              </div>
+              <input type="submit" value="Login"/>
+              <button onClick={this.showLogin}>close</button>
           </form>
           </div>
 
           <div className="overlay" ref={ref => this.overlay = ref}>
           <div className="createUserModal modal" ref={ref => this.createUserModal = ref}>
-            <div className="close">
-              <button onClick={this.showCreate}>close</button>
-            </div>
             <form action="" onSubmit={this.createUser}>
               <div>
                 <label htmlFor="createEmail">email</label>
@@ -244,13 +244,15 @@ class App extends React.Component {
               </div>
               <div>
                 <input type="Submit" value="create" />
+                  <button onClick={this.showCreate}>close</button>
               </div>
             </form>
             </div>
           </div>
 
 
-          <h1>Contact Book</h1>
+          <h1>Contact Book <i class="fa fa-map-marker" aria-hidden="true"></i></h1>
+          
             {showInputs()}
           <div className="contact-list-container">
           
