@@ -51,6 +51,7 @@ class App extends React.Component {
     this.showLogin = this.showLogin.bind(this)
     this.loginUser = this.loginUser.bind(this)
     this.logOut = this.logOut.bind(this)
+    this.getUser = this.getUser.bind(this)
   };
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user)=>{
@@ -89,7 +90,7 @@ class App extends React.Component {
     const address = document.getElementById("address").value;
     const work = document.getElementById("work").value;
     const other = document.getElementById("other").value;
-    const name = this.state.name;
+    const name = this.state.name.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
     const contactListing = {
       name,
       address,
@@ -109,7 +110,6 @@ class App extends React.Component {
   }
   showMore(){
     document.querySelector(".more-addresses").classList.toggle("show");
-    console.log("boomboom");
   }
   removeItem(itemToRemove){
     const dbRef = firebase.database().ref(itemToRemove);
@@ -161,10 +161,14 @@ class App extends React.Component {
     e.preventDefault();
     firebase.auth().signOut();
   }
+  getUser(){
+    const user = firebase.auth().currentUser.email;
+    return user;
+  }
     render() {
       const myData = this.state.contacts
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map((item) => <List data={item} key={item.key} remove={this.removeItem} />);
+        .map((item) => <List data={item} key={item.key} remove={this.removeItem} inputs={this.getMap}/>);
 
       const signOut = (
         <span>
@@ -185,31 +189,36 @@ class App extends React.Component {
         if (this.state.loggedIn) {
           return (
             <form onSubmit={this.addItem}>
-              <label htmlFor="name">Name</label>
-              <input type="text" name="name" value={this.state.name} onChange={this.onChange} ref={ref => this.name = ref} />
-              <label htmlFor="address">Home Address</label>
+              <div className="main-addresses">
+                <label htmlFor="name" className="visually-hidden">Name</label>
+                <input type="text" name="name" value={this.state.name} onChange={this.onChange} ref={ref => this.name = ref} placeholder="enter name"/>
+                <label htmlFor="address" className="visually-hidden">Home</label>
               {autocompleteInput("address")}
-              <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref} />
-              <input type="submit" />
-
-              <a onClick={() => this.showMore()}>More Addresses</a>
+                <input type="text" name="address" id="address" value={this.state.address} onChange={this.onChange} ref={ref => this.address = ref} placeholder="home address" />
+             </div>
 
               <div className="more-addresses">
-                <label htmlFor="work">Work Address</label>
+                <label htmlFor="work" className="visually-hidden">Work</label>
                 {autocompleteInput("work")}
-                <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} ref={ref => this.work = ref} />
-                <label htmlFor="other">Other Address</label>
+                <input type="text" name="work" id="work" value={this.state.work} onChange={this.onChange} ref={ref => this.work = ref} placeholder="work address"/>
+                <label htmlFor="other" className="visually-hidden">Other</label>
                 {autocompleteInput("other")}
-                <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} ref={ref => this.other = ref} />
+                <input type="text" name="other" id="other" value={this.state.other} onChange={this.onChange} ref={ref => this.other = ref} placeholder="other address" />
+              </div>
+              <div className="form-actions">
+              <input type="submit" value="save to my address book" />
+              <a onClick={() => this.showMore()}>Add More Addresses</a>
               </div>
             </form>
           )
         }
       }
+
       return (
+       
         <div className="wrapper">
-          <AuthNav loggedIn={this.state.loggedIn} logOut={this.logOut} showCreate={this.showCreate} showLogin={this.showLogin}/>
-  
+          <AuthNav loggedIn={this.state.loggedIn} logOut={this.logOut} showCreate={this.showCreate} showLogin={this.showLogin} user={this.getUser}/>
+
           <div className="loginModal modal" ref={ref => this.loginModal = ref}>
           
             <form action="" onSubmit={this.loginUser}>
@@ -232,32 +241,32 @@ class App extends React.Component {
             <form action="" onSubmit={this.createUser}>
               <div>
                 <label htmlFor="createEmail">email</label>
-                <input type="text" name="createEmail" ref={ref => this.createEmail = ref} />
+                  <input type="text" name="createEmail" ref={ref => this.createEmail = ref} onChange={this.onChange}/>
               </div>
               <div>
                 <label htmlFor="createPassword">password</label>
-                <input type="text" name="createPassword" ref={ref => this.createPassword = ref} />
+                  <input type="text" name="createPassword" ref={ref => this.createPassword = ref} onChange={this.onChange}/>
               </div>
               <div>
                 <label htmlFor="confirmPassword">confirmPassword</label>
-                <input type="text" name="confirmPassword" ref={ref => this.confirmPassword = ref} />
+                  <input type="text" name="confirmPassword" ref={ref => this.confirmPassword = ref} onChange={this.onChange} />
               </div>
               <div>
-                <input type="Submit" value="create" />
+                  <input type="Submit" value="create" onChange={this.onChange} />
                   <button onClick={this.showCreate}>close</button>
               </div>
             </form>
             </div>
           </div>
 
-
-          <h1>Contact Book <i class="fa fa-map-marker" aria-hidden="true"></i></h1>
-          
+          <header>
+            <h1>Contact Book <i className="fa fa-map-marker" aria-hidden="true"></i></h1>
+            <h2>Your Personal Online Address Book</h2>
+            <p>Add your friend's and family's addresses into your own online address book! Add their information into the fields, and select their name below to see your saved addresses.</p>
+          </header>
             {showInputs()}
           <div className="contact-list-container">
-          
             {showComp()}
-            
          </div>
         </div>
       )
