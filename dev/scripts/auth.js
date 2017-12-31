@@ -1,6 +1,6 @@
 import React from "react";
 
-export default class Auth extends React.Component {
+export default class AuthNav extends React.Component {
     constructor(props){
         super(props);
     }
@@ -11,13 +11,14 @@ export default class Auth extends React.Component {
                     (() => {
                         if (this.props.loggedIn === true) {
                             return (
-                                <div>
+                                <div className="logout auth">
+                                <p className="login-name">Logged In as: {this.props.user()}</p>
                                     <a onClick={this.props.logOut}>Logout</a>
                                 </div>
                             )
                         } else {
                             return (
-                                <div>
+                                <div className="login auth">
                                     <a onClick={this.props.showCreate}>Create User</a>
                                     <a onClick={this.props.showLogin}>Login</a>
                                 </div>
