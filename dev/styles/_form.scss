@@ -1,3 +1,39 @@
 form {
-    border: 1px solid black;
+    padding: 10px;
+    input[type=text], input[type=password] {
+        width: 45%;
+        border-radius: 5px;
+        font-size: 1.7rem;
+        padding: 5px;
+        margin-top: 5px;
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    input, a {
+        margin: 0 5px;
+    }
+}
+
+.main-addresses {
+    display: flex;
+    justify-content: space-around;
+}
+
+// add more contacts
+.more-addresses {
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.show {
+    display: flex;
+    justify-content: space-around;
+}
+
+.main-inputs {
+    margin: 20px;
 }
