@@ -56,7 +56,8 @@ class App extends React.Component {
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user)=>{
       if (user) {
-        const dbRef = firebase.database().ref();
+        const userId = user.uid;
+        const dbRef = firebase.database().ref(`users/${userId}/notes`);
 
         dbRef.on("value", (firebaseData) => {
           const contacts = [];
@@ -105,14 +106,16 @@ class App extends React.Component {
       other: ""
     });
 
-    const dbRef = firebase.database().ref();
+    const userId = firebase.auth().currentUser.uid;
+    const dbRef = firebase.database().ref(`users/${userId}/notes`);
     dbRef.push(contactListing);
   }
   showMore(){
     document.querySelector(".more-addresses").classList.toggle("show");
   }
   removeItem(itemToRemove){
-    const dbRef = firebase.database().ref(itemToRemove);
+    const userId = firebase.auth().currentUser.uid;
+    const dbRef = firebase.database().ref(`users/${userId}/notes/${itemToRemove}`);
     dbRef.remove();
   }
   createUser(e) {
@@ -172,8 +175,7 @@ class App extends React.Component {
 
       const signOut = (
         <span>
-          <p>Save your friend's addresses using Contact-Book! You can add their home, work, and other address to store for later.</p>
-          <h2>Please Sign In</h2>
+          <h2 className="signin-prompt">Please Sign In or Create an Account</h2>
         </span>
       )
 
@@ -222,15 +224,10 @@ class App extends React.Component {
           <div className="loginModal modal" ref={ref => this.loginModal = ref}>
           
             <form action="" onSubmit={this.loginUser}>
-              <div>
                 <label htmlFor="email">email</label>
                 <input type="text" name="email" ref={ref => this.userEmail = ref}/>
-              </div>
-
-              <div>
                   <label htmlFor="password">password</label>
                   <input type="text" name="password" ref={ref => this.userPassword = ref}/>
-              </div>
               <input type="submit" value="Login"/>
               <button onClick={this.showLogin}>close</button>
           </form>
@@ -248,7 +245,7 @@ class App extends React.Component {
                   <input type="text" name="createPassword" ref={ref => this.createPassword = ref} onChange={this.onChange}/>
               </div>
               <div>
-                <label htmlFor="confirmPassword">confirmPassword</label>
+                <label htmlFor="confirmPassword">confirm Password</label>
                   <input type="text" name="confirmPassword" ref={ref => this.confirmPassword = ref} onChange={this.onChange} />
               </div>
               <div>
