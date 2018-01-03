@@ -1,0 +1,58 @@
+@media only screen and (max-width: 500px) {
+    // header
+    .auth {
+        p {
+            font-size: 1.3rem;
+        }
+    }
+
+    // buttons 
+.form-actions {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    text-align: center;
+    input, a {
+        margin-top: 10px;
+    }
+}
+
+    // main contacts
+    span > p {
+        padding: 5px;
+        font-size: 1.6rem;
+    }
+
+    .contactList {
+            p {
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+    }
+}
+
+@media only screen and (max-width: 385px) {
+    // general styles
+    h1 {
+        font-size: 2.8rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    // header {
+    .auth p {
+        font-size: 1rem;
+    }
+
+    // buttons 
+    button, input[type=submit], a {
+        padding: 5px 5px;
+        font-size: 1rem;
+    }
+
+    // main contacts
+    span > p {
+        font-size: 1.4rem;
+    }
+}
