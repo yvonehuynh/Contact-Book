@@ -225,9 +225,9 @@ class App extends React.Component {
           
             <form action="" onSubmit={this.loginUser}>
                 <label htmlFor="email">email</label>
-                <input type="text" name="email" ref={ref => this.userEmail = ref}/>
+                <input type="email" name="email" ref={ref => this.userEmail = ref}/>
                   <label htmlFor="password">password</label>
-                  <input type="text" name="password" ref={ref => this.userPassword = ref}/>
+              <input type="password" name="password" ref={ref => this.userPassword = ref}/>
               <input type="submit" value="Login"/>
               <button onClick={this.showLogin}>close</button>
           </form>
@@ -238,15 +238,15 @@ class App extends React.Component {
             <form action="" onSubmit={this.createUser}>
               <div>
                 <label htmlFor="createEmail">email</label>
-                  <input type="text" name="createEmail" ref={ref => this.createEmail = ref} onChange={this.onChange}/>
+                  <input type="email" name="createEmail" ref={ref => this.createEmail = ref} onChange={this.onChange}/>
               </div>
               <div>
                 <label htmlFor="createPassword">password</label>
-                  <input type="text" name="createPassword" ref={ref => this.createPassword = ref} onChange={this.onChange}/>
+                  <input type="password" name="createPassword" ref={ref => this.createPassword = ref} onChange={this.onChange}/>
               </div>
               <div>
                 <label htmlFor="confirmPassword">confirm Password</label>
-                  <input type="text" name="confirmPassword" ref={ref => this.confirmPassword = ref} onChange={this.onChange} />
+                  <input type="password" name="confirmPassword" ref={ref => this.confirmPassword = ref} onChange={this.onChange} />
               </div>
               <div>
                   <input type="Submit" value="create" onChange={this.onChange} />
