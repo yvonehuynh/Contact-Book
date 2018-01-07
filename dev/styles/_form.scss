@@ -1,7 +1,7 @@
 form {
     padding: 10px;
-    input[type=text], input[type=password] {
-        width: 45%;
+    input[type=text], input[type=password], input[type=email] {
+        width: 100%;
         border-radius: 5px;
         font-size: 1.7rem;
         padding: 5px;
@@ -37,5 +37,3 @@ form {
 .main-inputs {
     margin: 20px;
 }
-
-
